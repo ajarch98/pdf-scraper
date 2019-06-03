@@ -1,0 +1,214 @@
+<!-- <center>
+<form action="getfile" method="POST" enctype="multipart/form-data">
+    Select PDF file: <input type="file" name="myfile"><br><br><br><br>
+    <input type="submit" value="Submit">
+</form>
+</center>
+
+ -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PDF Analysis with AI</title>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        
+		<style>
+			
+			.thumbnail{
+				display:inline-block;
+				margin:10px auto;
+				width:300px;
+			}
+			.thumbnail,.progress,#error{
+				display:none;
+			}
+
+			table {
+			  font-family: arial, sans-serif;
+			  border-collapse: collapse;
+			  width: 100%;
+			  
+			}
+
+			th{
+			 background-color: #ccc;
+			 border: 1px solid #dddddd;
+			 text-align: center !important;
+
+			}
+			td{
+			  border: 1px solid #dddddd;
+			  text-align: center;
+			  padding: 8px;
+			  background-color: #eee;
+			}
+
+			tr:nth-child(even) {
+			  background-color: #dddddd;
+			}
+		</style>
+    </head>
+    <body>
+        <div class="container">	
+			<h1>PDF Analysis with Artificial Intelligence</h1>
+			<p class="text-center">Find more about AI at <a href="https://en.wikipedia.org/wiki/Artificial_intelligence">Artificial intelligence
+            </a></p>
+			<div class="jumbotron">
+			
+				<br>
+				<form id="frm" action="getfile" method="POST" enctype="multipart/form-data">
+				
+					<div class="form-group">
+						<label>Select PDF to upload</label>
+						<input type="file" class="form-control" id="myfile" name="myfile" onchange="readURL()"/>
+					</div>
+					
+					<div class="preview text-center">
+						
+						<div class="progress">
+						  <div class="progress-bar" id="progressBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:40%">
+							70%
+						  </div>
+						</div>
+						
+						<div class="alert alert-danger" id="error"></div>
+					</div>
+					
+					<div class="form-group">
+						<label>&nbsp;</label>
+						<input type="submit" class="btn btn-success" id="btnUpload" value="Upload PDF" onclick="submitClick()"/>
+						<button class="btn btn-success" id="submitY">PROCESSING...</button>
+					</div>
+					
+				</form>
+				
+			</div>
+		
+
+
+
+
+
+<table id="excelTable">
+  <tr>
+    <th height="60">WAL LIFE TEST</th>
+    <th>REDEMPTION IN WHOLE</th>
+    <th>TRADING GAINS</th>
+    <th>RENV OVERCOLL TEST</th>
+    <th>COV LITE DEFINATION</th>
+    <th>COV LITE%</th>
+    <th>WARF</th>
+    <th>CCC</th>
+    <th>WAL TEST</th>
+  </tr>
+  <tr>
+    <td height="40" id="c1"></td>
+    <td height="40" id="c2"></td>
+    <td height="40" id="c3"></td>
+    <td height="40" id="c4"></td>
+    <td height="40" id="c5"></td>
+    <td height="40" id="c6"></td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+</table>
+</div>
+<script>
+
+// $('#frm').submit(function () {
+//  return false;
+// });
+var x = document.getElementById("btnUpload");
+var y = document.getElementById("submitY");
+var table = document.getElementById("excelTable");
+function submitClick(){
+x.style.display = "none";
+y.style.display = "block";
+table.style.display = "none";
+}
+
+table.style.display = "none";
+y.style.display = "none";
+x.disabled = true;
+y.disabled = true;
+
+function readURL() {
+x.disabled = false;
+}
+
+	$('body').on('submit','#frm',function(e){
+		e.preventDefault();
+		
+		var url = $(this).attr('action');
+		var frm = $(this);
+		
+		var data = new FormData();
+		if(frm.find('#myfile[type="file"]').length === 1 ){
+			 data.append( "myfile", $("#myfile")[0].files[0]);
+		}
+		
+
+		
+		var ajax  = new XMLHttpRequest();
+		ajax.upload.addEventListener('progress',function(evt){
+			var percentage = (evt.loaded/evt.total)*100;
+			upadte_progressbar(Math.round(percentage));
+		},false);
+		ajax.addEventListener('load',function(evt){
+			if(evt.target.responseText.toLowerCase().indexOf('error')>=0){
+				show_error(evt.target.responseText);
+			}
+			upadte_progressbar(0, JSON.parse(evt.target.responseText));
+			frm[0].reset();
+			
+		},false);
+		ajax.addEventListener('error',function(evt){
+			show_error('upload failed');
+			upadte_progressbar(0);
+		},false);
+		ajax.addEventListener('abort',function(evt){
+			show_error('upload aborted');
+			upadte_progressbar(0);
+		},false);
+		ajax.open('POST',url);
+		ajax.send(data);
+		return false;
+	}); 
+
+
+function upadte_progressbar(value, result){
+	$('#progressBar').css('width',value+'%').html(value+'%');
+	if(value==0){
+		console.log(result)
+		document.getElementById("c1").innerHTML = result.point1;
+		document.getElementById("c2").innerHTML = result.point2;
+		document.getElementById("c3").innerHTML = result.point3;
+		document.getElementById("c4").innerHTML = result.point4;
+		document.getElementById("c5").innerHTML = result.point5;
+		document.getElementById("c6").innerHTML = result.point6;
+
+                	y.style.display = "none";
+                    x.style.display = "block";
+                    table.style.display = "block";
+                    x.disabled = true;
+                    y.disabled = true;
+		$('.progress').hide();
+	}else{
+		$('.progress').show();
+	}
+}
+
+
+function show_error(error){
+	$('.thumbnail, #progressBar').hide();
+	$('#error').show();
+	$('#error').html(error);
+}
+
+</script>
+</body>
+</html>

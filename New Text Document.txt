@@ -1,0 +1,5 @@
+https://towardsdatascience.com/develop-a-nlp-model-in-python-deploy-it-with-flask-step-by-step-744f3bdd7776
+
+https://dzone.com/articles/3-data-integration-management-and-architecture-tre-1
+
+https://stackoverflow.com/questions/39801728/using-flask-to-load-a-txt-file-through-the-browser-and-access-its-data-for-proce
